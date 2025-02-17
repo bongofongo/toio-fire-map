@@ -2,15 +2,18 @@ class FireData {
   float latitude;
   float longitude;
   String date;
-  String time;
-  float brightness;
+  int time;
+  int brightness;
   
-  FireData(float lat, float lon, String d, String t, float b) {
+  FireData(float lat, float lon, String d, int t, int b) {
     latitude = lat;
     longitude = lon;
     date = d;
     time = t;
     brightness = b;
+  }
+  String toString() {
+     return String.format("latidude: %f longitude: %f date: %s time: %d brightness: %d", latitude, longitude, date, time, brightness); 
   }
 }
 
@@ -26,7 +29,7 @@ FireData[] loadData2FireDataArray(String filename) {
     float lat = row.getFloat("latitude");
     float lon = row.getFloat("longitude");
     String date = row.getString("acq_date");
-    String time = row.getString("acq_time");
+    int time = row.getInt("acq_time");
     int brightness = row.getInt("brightness");
     fireDataArray[i++] = new FireData(lat, lon, date, time, brightness);
   }
