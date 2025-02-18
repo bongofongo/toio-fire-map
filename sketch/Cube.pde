@@ -177,7 +177,7 @@ class Cube {
 
   //basic motor control w/ duration, specification found at:
   //https://toio.github.io/toio-spec/en/docs/ble_motor/#motor-control-with-specified-duration
-  //can use negative numbers to move toio backwards
+  //can use negative numbers to move toio backwards speed 0-115
   void motor(int leftSpeed, int rightSpeed, int duration) {
     motorDuration(id, leftSpeed, rightSpeed, duration);
   }
@@ -284,5 +284,18 @@ class Cube {
 
   float distance(float ox, float oy) {
     return sqrt ((x-ox)*(x-ox) + (y-oy)*(y-oy));
+  }
+
+  //spin function that spin the toio, direction is 1 for clockwise and -1 for counter clockwise
+  //speed is the speed of the spin ranging from 0-115
+  void spin(int direction = 1, int speeed = 50) {
+    motor(direction * speed, -direction * speed);
+  }
+
+  //spin function with duration
+  // direction is 1 for clockwise and -1 for counter clockwise
+  // speed is the speed of the spin ranging from 0-115
+  void spin(int direction = 1, int speeed = 50, int duration = 1000) {
+    motor(direction * speed, -direction * speed, duration);
   }
 }

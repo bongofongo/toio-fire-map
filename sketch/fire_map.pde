@@ -18,7 +18,7 @@ String[][] stringArray;
 
 /* Toio setting start -Chi */
 //TOIO constants
-int nCubes = 2;
+int nCubes = 8;
 int cubesPerHost = 12;
 int maxMotorSpeed = 115;
 int xOffset;
@@ -36,6 +36,11 @@ int framerate = 30;
 
 int[] matDimension = {45, 45, 955, 455};
 
+int mapXStart = 0;
+int mapXEnd = 655;
+int mapYStart = 0;
+int mapYEnd = 310;
+
 //for OSC
 OscP5 oscP5;
 //where to send the commands to
@@ -43,6 +48,9 @@ NetAddress[] server;
 
 //we'll keep the cubes here
 Cube[] cubes;
+// assign cube to different roles by referencing the cube id
+int[] cubeTimeInput = {0};
+int[] cubeFires = {1, 2, 3, 4, 5, 6, 7};
 /* Toio Setting End -Chi */
 
 void setup() {
@@ -80,12 +88,18 @@ void setup() {
  
  void draw() {
   background(0);
-  image(img, 0, 0, 655, 310);
+  image(img, mapXStart, mapYStart, mapXEnd, mapYEnd);
    
   drawLoadingDock(800, 50, "Loading Dock", 5);
   drawTimeline(50, 850, 390, 24, 800 / 24);
 
   /* Drawing related to TOIO goes here, Start -Chi*/
+  // get target locations for toio
+  latLon2MatLoc
+  // set the target locations for toio
+  // spin the toio
+
+
   //draw the cubes
   pushMatrix();
   translate(xOffset, yOffset);
@@ -148,3 +162,27 @@ void drawTimeline(float startX, float endX, float y, int totalHours, float spaci
   }
  }
  
+// convert the latitude and longitude to the x and y coordinates on the map
+int[] latLon2MatLoc(float lat, float lon) {
+  int[] matLoc = new int[2];
+  int mapLongtitudeStart = -180;
+  int mapLongtitudeEnd = 180;
+  int mapLatitudeStart = -90;
+  int mapLatitudeEnd = 90;
+  matLoc[0] = int(map(lon, mapLongtitudeStart,mapLongtitudeEnd, mapXStart, mapXEnd));
+  matLoc[1] = int(map(lat, mapLatitudeStart, mapLatitudeEnd, mapYStart, mapYEnd));
+  return matLoc;
+}
+
+// read time input from timeline toio [ATTN] io -Chi
+int readTimeInput() {
+  // read the x coordinate of the toio
+  int x = cubes[cubeTimeInput[0]].x;
+  int timelineXStart = 50;
+  int timelineXEnd = 800;
+  int timelineTimeStart = 0;
+  int timelineTimeEnd = 24;
+  // convert the x coordinate to the time
+  int time = int(map(x, timelineXStart, timelineXEnd, timelineTimeStart, timelineTimeEnd));
+  return time;
+}
