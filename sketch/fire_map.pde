@@ -1,3 +1,6 @@
+import oscP5.*;
+import netP5.*;
+
 String dataFile = "filtered_file.csv";
 
 /* TOIO Map Coordinates */
@@ -7,16 +10,64 @@ static int min_y = 45;
 static int max_y = 455;
 
 
-/* Loading Dock Position */ 
-/* Timeline Position */ 
+/* Loading Dock Position */
+/* Timeline Position */
 PImage img;
 FireData[] fireDataArray;
 String[][] stringArray;
+
+/* Toio setting start -Chi */
+//TOIO constants
+int nCubes = 2;
+int cubesPerHost = 12;
+int maxMotorSpeed = 115;
+int xOffset;
+int yOffset;
+
+//// Instruction for Windows Users  (Feb 2. 2025) ////
+// 1. Enable WindowsMode and set nCubes to the exact number of toio you are connecting.
+// 2. Run Processing Code FIRST, Then Run the Rust Code. After running the Rust Code, you should place the toio on the toio mat, then Processing should start showing the toio position.
+// 3. When you re-run the processing code, make sure to stop the rust code and toios to be disconnected (switch to Bluetooth stand-by mode [blue LED blinking]). If toios are taking time to disconnect, you can optionally turn off the toio and turn back on using the power button.
+// Optional: If the toio behavior is werid consider dropping the framerate (e.g. change from 30 to 10)
+//
+boolean WindowsMode = false; //When you enable this, it will check for connection with toio via Rust first, before starting void loop()
+
+int framerate = 30;
+
+int[] matDimension = {45, 45, 955, 455};
+
+//for OSC
+OscP5 oscP5;
+//where to send the commands to
+NetAddress[] server;
+
+//we'll keep the cubes here
+Cube[] cubes;
+/* Toio Setting End -Chi */
 
 void setup() {
   fireDataArray = loadData2FireDataArray(dataFile);
   stringArray = loadData2StringArray(dataFile);
   
+  /* Toio Initializing Start -Chi */
+  //launch OSC sercer
+  oscP5 = new OscP5(this, 3333);
+  server = new NetAddress[1];
+  server[0] = new NetAddress("127.0.0.1", 3334);
+
+  //create cubes
+  cubes = new Cube[nCubes];
+  for (int i = 0; i< nCubes; ++i) {
+    cubes[i] = new Cube(i);
+  }
+
+  // ATTN: Should we keep frameRate limit here? -Chi
+  frameRate(framerate);
+  if (WindowsMode) {
+    check_connection();
+  }
+  /* Toio Initializing End -Chi */
+
   /* Oliver's section filtering the data down. */
   FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
   
@@ -33,6 +84,30 @@ void setup() {
    
   drawLoadingDock(800, 50, "Loading Dock", 5);
   drawTimeline(50, 850, 390, 24, 800 / 24);
+
+  /* Drawing related to TOIO goes here, Start -Chi*/
+  //draw the cubes
+  pushMatrix();
+  translate(xOffset, yOffset);
+
+  for (int i = 0; i < nCubes; i++) {
+    cubes[i].checkActive(now);
+
+    if (cubes[i].isActive) {
+      pushMatrix();
+      translate(cubes[i].x, cubes[i].y);
+      fill(0);
+      textSize(15);
+      text(i, 0, -20);
+      noFill();
+      rotate(cubes[i].theta * PI/180);
+      rect(-10, -10, 20, 20);
+      line(0, 0, 20, 0);
+      popMatrix();
+    }
+  }
+  popMatrix();
+  /* Drawing related to TOIO goes here, End -Chi*/
  }
 
 void drawTimeline(float startX, float endX, float y, int totalHours, float spacing) {
