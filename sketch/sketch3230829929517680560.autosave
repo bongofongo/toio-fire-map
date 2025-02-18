@@ -1,14 +1,4 @@
-void setup(){
-  setup_toio();
-  //setup_map();
-}
-
-void draw(){
-  draw_toio();
-  //draw_map();
-}
-
-void setup_toio() {
+void setup() {
   /* Toio Initializing Start -Chi */
   //launch OSC sercer
   oscP5 = new OscP5(this, 3333);
@@ -29,22 +19,29 @@ void setup_toio() {
   /* Toio Initializing End -Chi */
 
   /* Oliver's section filtering the data down. */
-  //FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
+  FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
   
+  cubes[cubeTimeInput[0]].led(100, 255, 0, 0);
+  // spin the toio
+  cubes[cubeFires[0]].spin();
+  
+  // spin the toio
+  cubes[cubeFires[1]].spin();
+  
+  // spin the toio
+  cubes[cubeFires[2]].spin();
  }
  
- void draw_toio() {
+ void draw() {
 
   /* Drawing related to TOIO goes here, Start -Chi*/
   // get target locations for toio
   // latLon2MatLoc
   // set the target locations for toio
   // draw the cubes
-
-  long now = System.currentTimeMillis();
   pushMatrix();
   translate(xOffset, yOffset);
-
+  
   for (int i = 0; i < nCubes; i++) {
    cubes[i].checkActive(now);
 
@@ -63,15 +60,4 @@ void setup_toio() {
   }
   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
-  
-  
-  cubes[cubeTimeInput[0]].led(100, 255, 0, 0);
-  // spin the toio
-  cubes[cubeFires[0]].spin(1,115,100);
-  
-  // spin the toio
-  cubes[cubeFires[1]].spin(1,30,100);
-  
-  // spin the toio
-  cubes[cubeFires[2]].spin(1,60,100);
  }

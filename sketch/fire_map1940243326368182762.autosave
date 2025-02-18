@@ -1,11 +1,6 @@
 import oscP5.*;
 import netP5.*;
-import deadpixel.keystone.*;
 
-Keystone ks;
-CornerPinSurface surface;
-
-PGraphics offscreen;
 String dataFile = "filtered_file.csv";
 
 /* TOIO Map Coordinates */
@@ -23,7 +18,7 @@ String[][] stringArray;
 
 /* Toio setting start -Chi */
 //TOIO constants
-int nCubes = 4;
+int nCubes = 8;
 int cubesPerHost = 12;
 int maxMotorSpeed = 115;
 int xOffset;
@@ -55,10 +50,10 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3};
+int[] cubeFires = {1, 2, 3, 4, 5, 6, 7};
 /* Toio Setting End -Chi */
 
-void setup_map() {
+void setup() {
   fireDataArray = loadData2FireDataArray(dataFile);
   stringArray = loadData2StringArray(dataFile);
   
@@ -87,56 +82,46 @@ void setup_map() {
 
   /* Creating the Projection */
   img = loadImage("map.jpg");
-  size(1980, 1080, P3D);
-
-  ks = new Keystone(this);
-  surface = ks.createCornerPinSurface(910, 410, 20);
-  offscreen = createGraphics(910, 410, P3D);
+  size(910, 410);
   background(0);
  }
  
- void draw_map() {
-  offscreen.beginDraw();
-  offscreen.background(0);
+ void draw() {
+  background(0);
   image(img, mapXStart, mapYStart, mapXEnd, mapYEnd);
-  long now = System.currentTimeMillis();
-
+   
   drawLoadingDock(800, 50, "Loading Dock", 5);
   drawTimeline(50, 850, 390, 24, 800 / 24);
 
   /* Drawing related to TOIO goes here, Start -Chi*/
   // get target locations for toio
-  // latLon2MatLoc
+  //latLon2MatLoc
   // set the target locations for toio
   // spin the toio
 
 
   //draw the cubes
-  //pushMatrix();
-  //translate(xOffset, yOffset);
+  pushMatrix();
+  translate(xOffset, yOffset);
 
-  //for (int i = 0; i < nCubes; i++) {
-  //  cubes[i].checkActive(now);
+  for (int i = 0; i < nCubes; i++) {
+    cubes[i].checkActive(now);
 
-  //  if (cubes[i].isActive) {
-  //    pushMatrix();
-  //    translate(cubes[i].x, cubes[i].y);
-  //    fill(0);
-  //    textSize(15);
-  //    text(i, 0, -20);
-  //    noFill();
-  //    rotate(cubes[i].theta * PI/180);
-  //    rect(-10, -10, 20, 20);
-  //    line(0, 0, 20, 0);
-  //    popMatrix();
-  //  }
-  //}
-  //popMatrix();
+    if (cubes[i].isActive) {
+      pushMatrix();
+      translate(cubes[i].x, cubes[i].y);
+      fill(0);
+      textSize(15);
+      text(i, 0, -20);
+      noFill();
+      rotate(cubes[i].theta * PI/180);
+      rect(-10, -10, 20, 20);
+      line(0, 0, 20, 0);
+      popMatrix();
+    }
+  }
+  popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
-  
-  offscreen.endDraw();
-  
-  // surface.render(offscreen);
  }
 
 void drawTimeline(float startX, float endX, float y, int totalHours, float spacing) {

@@ -288,14 +288,27 @@ class Cube {
 
   //spin function that spin the toio, direction is 1 for clockwise and -1 for counter clockwise
   //speed is the speed of the spin ranging from 0-115
-  void spin(int direction = 1, int speeed = 50) {
+  void spin() {
+    int default_dir = 1;
+    int default_speed = 50;
+    int default_duration = 1000;
+    spin(default_dir, default_speed, default_duration);
+  }
+
+  void spinForever() {
+    int default_dir = 1;
+    int default_speed = 50;
+    spin(default_dir, default_speed);
+  }
+
+  void spin(int direction, int speed) {
     motor(direction * speed, -direction * speed);
   }
 
   //spin function with duration
   // direction is 1 for clockwise and -1 for counter clockwise
   // speed is the speed of the spin ranging from 0-115
-  void spin(int direction = 1, int speeed = 50, int duration = 1000) {
+  void spin(int direction, int speed, int duration) {
     motor(direction * speed, -direction * speed, duration);
   }
 }
