@@ -1,5 +1,3 @@
-import oscP5.*;
-import netP5.*;
 import deadpixel.keystone.*;
 
 Keystone ks;
@@ -21,65 +19,13 @@ PImage img;
 FireData[] fireDataArray;
 String[][] stringArray;
 
-/* Toio setting start -Chi */
-//TOIO constants
-int nCubes = 4;
-int cubesPerHost = 12;
-int maxMotorSpeed = 115;
-int xOffset;
-int yOffset;
-
-//// Instruction for Windows Users  (Feb 2. 2025) ////
-// 1. Enable WindowsMode and set nCubes to the exact number of toio you are connecting.
-// 2. Run Processing Code FIRST, Then Run the Rust Code. After running the Rust Code, you should place the toio on the toio mat, then Processing should start showing the toio position.
-// 3. When you re-run the processing code, make sure to stop the rust code and toios to be disconnected (switch to Bluetooth stand-by mode [blue LED blinking]). If toios are taking time to disconnect, you can optionally turn off the toio and turn back on using the power button.
-// Optional: If the toio behavior is werid consider dropping the framerate (e.g. change from 30 to 10)
-//
-boolean WindowsMode = false; //When you enable this, it will check for connection with toio via Rust first, before starting void loop()
-
-int framerate = 30;
-
-int[] matDimension = {45, 45, 955, 455};
-
-int mapXStart = 0;
-int mapXEnd = 655;
-int mapYStart = 0;
-int mapYEnd = 310;
-
-//for OSC
-OscP5 oscP5;
-//where to send the commands to
-NetAddress[] server;
-
-//we'll keep the cubes here
-Cube[] cubes;
-// assign cube to different roles by referencing the cube id
-int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3};
-/* Toio Setting End -Chi */
+void settings() {
+  size(1980, 1080, P3D);
+}
 
 void setup_map() {
   fireDataArray = loadData2FireDataArray(dataFile);
   stringArray = loadData2StringArray(dataFile);
-  
-  /* Toio Initializing Start -Chi */
-  //launch OSC sercer
-  oscP5 = new OscP5(this, 3333);
-  server = new NetAddress[1];
-  server[0] = new NetAddress("127.0.0.1", 3334);
-
-  //create cubes
-  cubes = new Cube[nCubes];
-  for (int i = 0; i< nCubes; ++i) {
-    cubes[i] = new Cube(i);
-  }
-
-  // ATTN: Should we keep frameRate limit here? -Chi
-  frameRate(framerate);
-  if (WindowsMode) {
-    check_connection();
-  }
-  /* Toio Initializing End -Chi */
 
   /* Oliver's section filtering the data down. */
   FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
@@ -87,7 +33,6 @@ void setup_map() {
 
   /* Creating the Projection */
   img = loadImage("map.jpg");
-  size(1980, 1080, P3D);
 
   ks = new Keystone(this);
   surface = ks.createCornerPinSurface(910, 410, 20);
@@ -187,17 +132,4 @@ int[] latLon2MatLoc(float lat, float lon) {
   matLoc[0] = int(map(lon, mapLongtitudeStart,mapLongtitudeEnd, mapXStart, mapXEnd));
   matLoc[1] = int(map(lat, mapLatitudeStart, mapLatitudeEnd, mapYStart, mapYEnd));
   return matLoc;
-}
-
-// read time input from timeline toio [ATTN] io -Chi
-int readTimeInput() {
-  // read the x coordinate of the toio
-  int x = cubes[cubeTimeInput[0]].x;
-  int timelineXStart = 50;
-  int timelineXEnd = 800;
-  int timelineTimeStart = 0;
-  int timelineTimeEnd = 24;
-  // convert the x coordinate to the time
-  int time = int(map(x, timelineXStart, timelineXEnd, timelineTimeStart, timelineTimeEnd));
-  return time;
 }

@@ -1,77 +1,9 @@
-void setup(){
+void setup() {
   setup_toio();
   //setup_map();
 }
 
-void draw(){
+void draw() {
   draw_toio();
   //draw_map();
 }
-
-void setup_toio() {
-  /* Toio Initializing Start -Chi */
-  //launch OSC sercer
-  oscP5 = new OscP5(this, 3333);
-  server = new NetAddress[1];
-  server[0] = new NetAddress("127.0.0.1", 3334);
-
-  //create cubes
-  cubes = new Cube[nCubes];
-  for (int i = 0; i< nCubes; ++i) {
-    cubes[i] = new Cube(i);
-  }
-
-  // ATTN: Should we keep frameRate limit here? -Chi
-  frameRate(framerate);
-  if (WindowsMode) {
-    check_connection();
-  }
-  /* Toio Initializing End -Chi */
-
-  /* Oliver's section filtering the data down. */
-  //FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
-  
- }
- 
- void draw_toio() {
-
-  /* Drawing related to TOIO goes here, Start -Chi*/
-  // get target locations for toio
-  // latLon2MatLoc
-  // set the target locations for toio
-  // draw the cubes
-
-  long now = System.currentTimeMillis();
-  pushMatrix();
-  translate(xOffset, yOffset);
-
-  for (int i = 0; i < nCubes; i++) {
-   cubes[i].checkActive(now);
-
-   if (cubes[i].isActive) {
-     pushMatrix();
-     translate(cubes[i].x, cubes[i].y);
-     fill(0);
-     textSize(15);
-     text(i, 0, -20);
-     noFill();
-     rotate(cubes[i].theta * PI/180);
-     rect(-10, -10, 20, 20);
-     line(0, 0, 20, 0);
-     popMatrix();
-   }
-  }
-  popMatrix();
-  /* Drawing related to TOIO goes here, End -Chi*/
-  
-  
-  cubes[cubeTimeInput[0]].led(100, 255, 0, 0);
-  // spin the toio
-  cubes[cubeFires[0]].spin(1,115,100);
-  
-  // spin the toio
-  cubes[cubeFires[1]].spin(1,30,100);
-  
-  // spin the toio
-  cubes[cubeFires[2]].spin(1,60,100);
- }

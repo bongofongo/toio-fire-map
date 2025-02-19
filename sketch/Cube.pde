@@ -305,7 +305,7 @@ class Cube {
     motor(direction * speed, -direction * speed);
   }
 
-  //spin function with duration
+  // spin function with duration
   // direction is 1 for clockwise and -1 for counter clockwise
   // speed is the speed of the spin ranging from 0-115
   void spin(int direction, int speed, int duration) {
