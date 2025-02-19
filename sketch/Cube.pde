@@ -295,6 +295,13 @@ class Cube {
     spin(default_dir, default_speed, default_duration);
   }
 
+  //speed is the speed of the spin ranging from 0-115
+  void spin(int speed) {
+    int default_dir = 1;
+    int default_duration = 1000;
+    spin(default_dir, speed, default_duration);
+  }
+
   void spinForever() {
     int default_dir = 1;
     int default_speed = 50;

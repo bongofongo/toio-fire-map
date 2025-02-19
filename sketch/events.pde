@@ -84,7 +84,7 @@ void keyPressed() {
     break;
 
   case 'c':
-    // enter/leave calibration mode, where surfaces can be warped 
+    // enter/leave calibration mode, where surfaces can be warped
     // and moved
     ks.toggleCalibration();
     break;
@@ -98,7 +98,16 @@ void keyPressed() {
     // saves the layout
     ks.save();
     break;
-  
+
+  case 'i':
+    // change fire data set
+    changeToioFire(toioFires, eventSet1);
+    break;
+  case 'o':
+    // change fire data set
+    changeToioFire(toioFires, eventSet2);
+    break;
+
   default:
     break;
   }

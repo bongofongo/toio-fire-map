@@ -35,6 +35,7 @@ Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
 int[] cubeFires = {1, 2, 3};
+ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 
 
@@ -55,6 +56,10 @@ void setup_toio() {
   frameRate(framerate);
   if (WindowsMode) {
     check_connection();
+  }
+    // assign toio to fire toio
+  for (int i = 0; i < cubeFires.length; i++) {
+    toioFires[i] = new ToioFire(cubes[cubeFires[i]], eventSet1[i]);
   }
   /* Toio Initializing End -Chi */
 
@@ -98,17 +103,7 @@ void setup_toio() {
   }
   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
-  
-  
-  cubes[cubeTimeInput[0]].led(100, 255, 0, 0);
-  // spin the toio
-  cubes[cubeFires[0]].spin(1,115,100);
-  
-  // spin the toio
-  cubes[cubeFires[1]].spin(1,30,100);
-  
-  // spin the toio
-  cubes[cubeFires[2]].spin(1,60,100);
+  toioUpdate(toioFires);
  }
 
 
@@ -126,16 +121,16 @@ class Event {
 
 // two sample Event sets for testing
 Event[] eventSet1 = {
-  new Event(60, 35, 90),
+  new Event(350, 360, 100),
   new Event(180, 73, 40),
   new Event(120, 120, 70),
   new Event(90, 180, 100),
-  new Event(30, 120, 60)
+  new Event(90, 120, 60)
 };
 Event[] eventSet2 = {
-  new Event(100, 50, 80),
+  new Event(100, 250, 80),
   new Event(200, 100, 60),
-  new Event(300, 150, 40),
+  new Event(300, 150, 100),
   new Event(400, 200, 20),
   new Event(500, 250, 10)
 };
@@ -153,13 +148,13 @@ class ToioFire {
 // the function that checks toio position, if at position, then spin, else move to position
 void toioUpdate(ToioFire[] toioFires) {
   // set the margin of error for the toio to reach the target
-  int margin = 5;
+  int margin = 15;
   for (int i = 0; i < toioFires.length; i++) {
     ToioFire toioFire = toioFires[i];
     Cube cube = toioFire.cube;
     Event event = toioFire.event;
     if (abs(cube.x - event.x) < margin && abs(cube.y - event.y) < margin) {
-      cube.spin();
+      cube.spin(event.brightness); // TODO: map brightness to speed
     } else {
       // set the target theta as the angle between the current position and the target position
       int targetTheta = int(atan2(event.y - cube.y, event.x - cube.x));
@@ -179,4 +174,25 @@ int readTimeInput() {
   // convert the x coordinate to the time
   int time = int(map(x, timelineXStart, timelineXEnd, timelineTimeStart, timelineTimeEnd));
   return time;
+}
+
+// change the ToioFire with a new fire data eventset
+void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
+    // if event set is less than the number of toio, set the rest to a basic event
+    // if (eventSet.length < toioFires.length) {
+    //   Event[] newEventSet = new Event[toioFires.length];
+    //   for (int i = 0; i < eventSet.length; i++) {
+    //     newEventSet[i] = eventSet[i];
+    //   }
+    //   for (int i = eventSet.length; i < toioFires.length; i++) {
+    //     newEventSet[i] = new Event(0, 0, 0);
+    //   }
+    //   eventSet = newEventSet;
+    // }
+    
+  for (int i = 0; i < toioFires.length; i++) {
+    ToioFire toioFire = toioFires[i];
+    Event event = eventSet[i];
+    toioFire.event = event;
+  }
 }
