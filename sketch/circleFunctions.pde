@@ -13,7 +13,7 @@ class ExpandingCircle {
     this.expansionRate = expansionRate;
     this.maxDiameter = maxDiameter;
     this.currentDiameter = 0;  // Start with a circle of size 0
-    this.removing = false;
+    this.removing = true;
     this.finished = false;
   }
 

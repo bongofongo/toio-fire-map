@@ -78,6 +78,12 @@ void setup_map() {
 
   drawLoadingDock(800, 50, "Loading Dock", 5);
   drawTimeline(timeLineStart, timeLineEnd, 390, 24, 800 / 24);
+  for (int i = 0; i < circles.length; i++) {
+    circles[i].update();
+    circles[i].display();
+  }
+
+  
 
   /* Drawing related to TOIO goes here, Start -Chi*/
   // get target locations for toio
