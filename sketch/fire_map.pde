@@ -19,6 +19,8 @@ PImage img;
 FireData[] fireDataArray;
 String[][] stringArray;
 
+ExpandingCircle[] circles = new ExpandingCircle[7];
+
 void settings() {
   size(1980, 1080, P3D);
 }
@@ -29,8 +31,16 @@ void setup_map() {
 
   /* Oliver's section filtering the data down. */
   FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
-  
 
+  /* Change the default circle look here, but chagne indidual ones elsewhere. */
+  for (int i = 0; i < circles.length; i++) {
+    float x = 0;
+    float y = 0;
+    float expansionRate = 1;
+    float maxDiameter = 50;
+    circles[i] = new ExpandingCircle(x, y, expansionRate, maxDiameter);
+  }
+  
   /* Creating the Projection */
   img = loadImage("map.jpg");
 
@@ -43,7 +53,7 @@ void setup_map() {
  void draw_map() {
   offscreen.beginDraw();
   offscreen.background(0);
-  image(img, mapXStart, mapYStart, mapXEnd, mapYEnd);
+  offscreen.image(img, mapXStart, mapYStart, mapXEnd, mapYEnd);
   long now = System.currentTimeMillis();
 
   drawLoadingDock(800, 50, "Loading Dock", 5);
@@ -85,40 +95,40 @@ void setup_map() {
  }
 
 void drawTimeline(float startX, float endX, float y, int totalHours, float spacing) {
-  stroke(255);
-  strokeWeight(2);
+  offscreen.stroke(255);
+  offscreen.strokeWeight(2);
   
-  line(startX, y, endX, y);
+  offscreen.line(startX, y, endX, y);
 
   for (int i = 0; i < totalHours; i++) {
     float x = startX + i * spacing;
 
-    line(x, y - 10, x, y + 10);
+    offscreen.line(x, y - 10, x, y + 10);
 
-    textAlign(CENTER, TOP);
-    textSize(12);
-    fill(255, 255, 255);
-    text(i + ":00", x, y -25);
+    offscreen.textAlign(CENTER, TOP);
+    offscreen.textSize(12);
+    offscreen.fill(255, 255, 255);
+    offscreen.text(i + ":00", x, y -25);
   }
 }
  
  void drawLoadingDock(float x, float y, String text, int numSpots) {
   int rectWidth = 200;
   int rectHeight = 50;
-  fill(200, 0, 0);
-  stroke(0);
-  rect(x - (rectWidth / 2), y - (rectHeight / 2), 200, 50);
+  offscreen.fill(200, 0, 0);
+  offscreen.stroke(0);
+  offscreen.rect(x - (rectWidth / 2), y - (rectHeight / 2), 200, 50);
 
-  fill(255);
-  textSize(20);
-  textAlign(CENTER, CENTER);
-  text(text, x, y);
+  offscreen.fill(255);
+  offscreen.textSize(20);
+  offscreen.textAlign(CENTER, CENTER);
+  offscreen.text(text, x, y);
   
   for (int i = 0; i < numSpots; i++) {
-    fill (200, 0, 0);
-    stroke(0);
+    offscreen.fill (200, 0, 0);
+    offscreen.stroke(0);
     float spacing = ((410 - y - 100) / numSpots);
-    rect(x-15, y + (spacing * i) + 50, 30, 30);
+    offscreen.rect(x-15, y + (spacing * i) + 50, 30, 30);
   }
  }
  
