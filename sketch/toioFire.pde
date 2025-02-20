@@ -29,7 +29,7 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3, 4, 5};
+int[] cubeFires = {1, 2, 3};
 ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 
@@ -71,34 +71,34 @@ void setup_toio() {
   // set the target locations for toio
   // draw the cubes
 
-  background(255);
-  stroke(0);
-  long now = System.currentTimeMillis();
+//   background(255);
+//   stroke(0);
+//   long now = System.currentTimeMillis();
 
-  //draw the "mat"
-  fill(255);
-  rect(matDimension[0], matDimension[1], matDimension[2] - matDimension[0], matDimension[3] - matDimension[1]);
+//   //draw the "mat"
+//   fill(255);
+//   rect(matDimension[0], matDimension[1], matDimension[2] - matDimension[0], matDimension[3] - matDimension[1]);
 
-  pushMatrix();
-  translate(xOffset, yOffset);
+//   pushMatrix();
+//   translate(xOffset, yOffset);
 
-  for (int i = 0; i < nCubes; i++) {
-   cubes[i].checkActive(now);
+//   for (int i = 0; i < nCubes; i++) {
+//    cubes[i].checkActive(now);
 
-   if (cubes[i].isActive) {
-     pushMatrix();
-     translate(cubes[i].x, cubes[i].y);
-     fill(0);
-     textSize(15);
-     text(i, 0, -20);
-     noFill();
-     rotate(cubes[i].theta * PI/180);
-     rect(-10, -10, 20, 20);
-     line(0, 0, 20, 0);
-     popMatrix();
-   }
-  }
-  popMatrix();
+//    if (cubes[i].isActive) {
+//      pushMatrix();
+//      translate(cubes[i].x, cubes[i].y);
+//      fill(0);
+//      textSize(15);
+//      text(i, 0, -20);
+//      noFill();
+//      rotate(cubes[i].theta * PI/180);
+//      rect(-10, -10, 20, 20);
+//      line(0, 0, 20, 0);
+//      popMatrix();
+//    }
+//   }
+//   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
   toioUpdate(toioFires);
  }
@@ -192,4 +192,46 @@ void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
     Event event = eventSet[i];
     toioFire.event = event;
   }
+}
+
+// convert fireDataArray to Event array
+Event[] toioFireData(FireData[] fireDataArray, int startIndex, int endIndex) {
+    //check if startIndex and endIndex is within the range of fireDataArray
+  if (startIndex < 0 || endIndex > fireDataArray.length) {
+    println("Error: startIndex or endIndex is out of range");
+    return null;
+  }
+  Event[] eventSet = new Event[endIndex - startIndex];
+  for (int i = startIndex; i < endIndex; i++) {
+    FireData fireData = fireDataArray[i];
+    int[] matLoc = lonLat2MatLoc(fireData.longitude, fireData.latitude);
+    Event event = new Event(matLoc[0], matLoc[1], fireData.brightness);
+    eventSet[i - startIndex] = event;
+  }
+  return regulateSpeed(eventSet);
+}
+
+// update eventset to regulate speed according to the brightness, speed = map(brightness, 0, 115, 0, maxBrightness in the eventset) then return a new eventset with the altered brightness
+Event[] regulateSpeed(Event[] oldEventSet) {
+    // find the max brightness in the eventset
+    int maxBrightness = 0;
+    for (int i = 0; i < oldEventSet.length; i++) {
+        Event event = oldEventSet[i];
+        maxBrightness = max(maxBrightness, event.brightness);
+    }
+    // regulate the speed of the toio by changing the brightness of the event
+    Event[] newEventSet = new Event[oldEventSet.length];
+    for (int i = 0; i < oldEventSet.length; i++) {
+        Event oldEvent = oldEventSet[i];
+        int regulatedBrightness = int(map(oldEvent.brightness, 0, maxBrightness, 0, maxMotorSpeed));
+        Event newEvent = new Event(oldEvent.x, oldEvent.y, regulatedBrightness);
+        newEventSet[i] = newEvent;
+    }
+    return newEventSet;
+}
+
+// updateToioFires
+void updateToioFires(FireData[] fireDataArray) {
+    // change the toioFires with the new eventSet
+    changeToioFire(toioFires, toioFireData(fireDataArray, 0, toioFires.length)); // index ATTN: might have bugs - Chi
 }

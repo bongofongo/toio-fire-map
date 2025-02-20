@@ -1,6 +1,6 @@
- PGraphics offscreen;
- 
- FireData[] filterFireDataByTime(FireData[] dataArray, int startTime, int endTime) {
+//  PGraphics offscreen;
+
+FireData[] filterFireDataByTime(FireData[] dataArray, int startTime, int endTime) {
   ArrayList<FireData> filteredList = new ArrayList<FireData>();
 
   for (FireData fire : dataArray) {
@@ -11,14 +11,14 @@
 
   //rows = ceil((float) filteredList.size());
   FireData[] res = new FireData[filteredList.size()];
-  
+
   for (int i = 0; i < filteredList.size(); i++) {
     res[i] = filteredList.get(i);
   }
   return res;
- }
- 
- /* Helper function clusters using the earliest start time, 
+}
+
+/* Helper function clusters using the earliest start time,
     a cumulative brightness, and the average latitude and longitude */
  FireData[] clusterFireData(FireData[] data, int clusterRadius) {
   ArrayList<FireData> clusteredFires = new ArrayList<FireData>();
@@ -59,11 +59,11 @@
  
 /* toioFireData() returns a clustered splice of firedata
    data: the full firedata dataset
-   maxTOIOS: the total number of datapoints you want 
+   maxTOIOS: the total number of datapoints you want
    clusterRadius: max distance (km) that you want datapoints to cluster by
    start: start time (in hrs:min ex 1:45am = 0145)
    end: end time.
-   returns: FireData[] splice of data. 
+   returns: FireData[] splice of data.
    */
 FireData[] toioFireData(FireData[] data, int maxTOIOS, int clusterRadius, int start, int end) {
   FireData[] filteredFires = filterFireDataByTime(fireDataArray, start, end);

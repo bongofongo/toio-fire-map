@@ -46,7 +46,9 @@ void setup_map() {
 
   /* Oliver's section filtering the data down. */
   FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
-
+  // update the toioFires
+  updateToioFires(toioOut);
+  
   /* Change the default circle look here, but chagne indidual ones elsewhere. */
   for (int i = 0; i < circles.length; i++) {
     float x = 0;
