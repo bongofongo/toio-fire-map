@@ -1,3 +1,5 @@
+ PGraphics offscreen;
+ 
  FireData[] filterFireDataByTime(FireData[] dataArray, int startTime, int endTime) {
   ArrayList<FireData> filteredList = new ArrayList<FireData>();
 
@@ -74,4 +76,27 @@ FireData[] toioFireData(FireData[] data, int maxTOIOS, int clusterRadius, int st
   }
   
   return res;
+}
+
+void displayClusterInfo(FireData cluster, float x, float y) {
+  String info = "Lat: " + nf(cluster.latitude, 0, 2) +
+                "\nLon: " + nf(cluster.longitude, 0, 2) +
+                "\nDate: " + cluster.date +
+                "\nTime: " + cluster.time +
+                "\nBrightness: " + cluster.brightness;
+  
+  offscreen.textSize(12);
+  offscreen.textAlign(LEFT, TOP);
+  
+  float margin = 5;
+  float boxWidth = textWidth("Brightness: " + cluster.brightness) + margin * 2;
+  float lineHeight = textAscent() + textDescent() + 2;
+  float boxHeight = lineHeight * 5 + margin * 2;  // 5 lines
+  
+  offscreen.noStroke();
+  offscreen.fill(255, 200, 200); // light red background
+  offscreen.rect(x, y, boxWidth, boxHeight, 5);
+  
+  offscreen.fill(0);
+  offscreen.text(info, x + margin, y + margin);
 }
