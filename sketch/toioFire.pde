@@ -169,8 +169,13 @@ void toioUpdate(ToioFire[] toioFires) {
     Cube cube = toioFire.cube;
     Event event = toioFire.event;
     if (abs(cube.x - event.x) < margin && abs(cube.y - event.y) < margin) {
+      circles[i].x = cube.x;
+      circles[i].y = cube.y;
+      circles[i].maxDiameter = event.brightness;
+      circles[i].show();
       cube.spin(event.brightness); // TODO: map brightness to speed
     } else {
+      circles[i].remove();
       // set the target theta as the angle between the current position and the target position
       int targetTheta = int(atan2(event.y - cube.y, event.x - cube.x));
       cube.target(event.x, event.y, targetTheta);
