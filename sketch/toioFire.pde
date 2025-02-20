@@ -170,8 +170,8 @@ void toioUpdate(ToioFire[] toioFires) {
     Event event = toioFire.event;
     if (abs(cube.x - event.x) < margin && abs(cube.y - event.y) < margin) {
       circles[i].maxDiameter = event.brightness/2 * 1.5;
-      circles[i].x = cube.x - circles[i].maxDiameter /2;
-      circles[i].y = cube.y - circles[i].maxDiameter;
+      circles[i].x = cube.x - 20;
+      circles[i].y = cube.y - 40;
       circles[i].show();
       cube.spin(event.brightness); // TODO: map brightness to speed
     } else {
