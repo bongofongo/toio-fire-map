@@ -116,13 +116,16 @@ void keyPressed() {
 //execute code when mouse is pressed
 void mousePressed() {
   println("mouseclicked at x,y:" + mouseX + "," + mouseY );
-  if (mouseX > matDimension[0] && mouseX < matDimension[2] && mouseY > matDimension[1] && mouseY < matDimension[3]) {
-    println("mouseclicked area is in mat range");
-    println("Sending toio to destinitation:");
-    cubes[0].target(mouseX, mouseY, 0);
-  } else {
-    println("mouseclicked area is out of mat range, Nothing will happen.");
-  }
+  // print the mouse locartion to longtitude and latitude
+  float[] longlat = matLoc2LonLat(mouseX, mouseY);
+  println("mouseclicked at longtitude, latitude:" + longlat[0] + "," + longlat[1] );
+  //if (mouseX > matDimension[0] && mouseX < matDimension[2] && mouseY > matDimension[1] && mouseY < matDimension[3]) {
+  //  println("mouseclicked area is in mat range");
+  //  println("Sending toio to destinitation:");
+  //  cubes[0].target(mouseX, mouseY, 0);
+  //} else {
+  //  println("mouseclicked area is out of mat range, Nothing will happen.");
+  //}
 
   //insert code here;
 }
@@ -135,17 +138,17 @@ void mouseReleased() {
 //execute code when button on toio is pressed
 void buttonDown(int id) {
   println("Button Pressed!");
-  println("Cube0 at x,y:");
-  println(cubes[0].x);
-  println(cubes[0].y);
+  //println("Cube0 at x,y:");
+  //println(cubes[0].x);
+  //println(cubes[0].y);
 }
 
 //execute code when button on toio is released
 void buttonUp(int id) {
   println("Button Released!");
 
-  delay(100);
-  cubes[id].motor(115, 115, 100);
+  //delay(100);
+  //cubes[id].motor(115, 115, 100);
 }
 
 //execute code when toio detects collision

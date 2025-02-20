@@ -19,11 +19,6 @@ boolean WindowsMode = false; //When you enable this, it will check for connectio
 int framerate = 30;
 
 int[] matDimension = {45, 45, 955, 455};
-//// this shoule be in map file, TODO, -Chi
-int mapXStart = 0;
-int mapXEnd = 655;
-int mapYStart = 0;
-int mapYEnd = 310;
 
 //for OSC
 OscP5 oscP5;
@@ -34,10 +29,12 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3};
+int[] cubeFires = {1, 2, 3, 4, 5};
 ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 
+// data from fire_map.pde
+// FireData[] toioOut = toioFireData(fireDataArray, 5, 10, 0000, 2399);
 
 void setup_toio() {
   /* Toio Initializing Start -Chi */

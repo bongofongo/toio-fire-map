@@ -57,7 +57,8 @@ void setup_map() {
   }
   
   /* Creating the Projection */
-  img = loadImage("mapFromGoogle.jpeg");
+  img = loadImage("./data/map_from_google.jpeg");
+  
 
   ks = new Keystone(this);
   surface = ks.createCornerPinSurface(910, 410, 20);
