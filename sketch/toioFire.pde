@@ -29,7 +29,7 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3};
+int[] cubeFires = {1, 2, 3};//need to match with the number of cubes
 ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 

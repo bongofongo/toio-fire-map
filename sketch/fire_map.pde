@@ -152,7 +152,10 @@ void drawTimeline(float startX, float endX, float y, int totalHours, float spaci
 // convert the latitude and longitude to the x and y coordinates on the map
 int[] lonLat2MatLoc(float lon, float lat) {
   int[] matLoc = new int[2];
-  matLoc[0] = int(map(lon, mapLongtitudeStart, mapLongtitudeEnd, mapXStart, mapXEnd));
+  matLoc[0] = int(map(lon, mapLongtitudeStart, mapLongtitudeEnd, mapXStart, mapXEnd-90));
+  if (matLoc[0] > 455) {
+    matLoc[0] = matLoc[0]+90;
+  }
   matLoc[1] = int(map(lat, mapLatitudeStart, mapLatitudeEnd, mapYStart, mapYEnd));
   return matLoc;
 }
