@@ -108,9 +108,9 @@ void setup_toio() {
 //   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
   int timeInput = readTimeInput();
-  // FireData[] toioOut = toioFireData(fireDataArray, 5, 10, timeInput, timeInput+2000);
-  // // update the toioFires
-  // updateToioFires(toioOut);
+  FireData[] toioOut = toioFireData(fireDataArray, 5, 10, timeInput, timeInput+2000);
+  // update the toioFires
+  updateToioFires(toioOut);
   toioUpdate(toioFires);
  }
 

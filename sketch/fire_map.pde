@@ -159,10 +159,24 @@ void drawTimeline(float startX, float endX, float y, int totalHours, float spaci
 int[] lonLat2MatLoc(float lon, float lat) {
   int[] matLoc = new int[2];
   matLoc[0] = int(map(lon, mapLongtitudeStart, mapLongtitudeEnd, mapXStart, mapXEnd-90));
+  // set the bound to 50 50 - 410 910
+  if (matLoc[0] < 50) {
+    matLoc[0] = 50;
+  }
+  if (matLoc[0] > 820) {
+    matLoc[0] = 820;
+  }
+  if (matLoc[1] < 50) {
+    matLoc[1] = 50;
+  }
+  if (matLoc[1] > 410) {
+    matLoc[1] = 410;
+  }
   if (matLoc[0] > 455) {
     matLoc[0] = matLoc[0]+90;
   }
   matLoc[1] = int(map(lat, mapLatitudeStart, mapLatitudeEnd, mapYStart, mapYEnd));
+  
   return matLoc;
 }
 
