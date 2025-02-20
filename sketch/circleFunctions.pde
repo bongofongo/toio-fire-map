@@ -1,3 +1,4 @@
+PGraphics offscreen;
 class ExpandingCircle {
   float x, y;
   float currentDiameter;
