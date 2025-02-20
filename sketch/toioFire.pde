@@ -29,7 +29,7 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3,4,5,6,7};//need to match with the number of cubes
+int[] cubeFires = {1, 2, 3,4,5};//need to match with the number of cubes
 ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 
@@ -63,7 +63,7 @@ void setup_toio() {
   for (int i = 0; i < toioFires.length; i++) {
     ToioFire toioFire = toioFires[i];
     Cube cube = toioFire.cube;
-    cube.led(255, 0, 0);
+    cube.led(500, 255, 0, 0);
   }
   /* Toio Initializing End -Chi */
 
@@ -133,14 +133,21 @@ Event[] eventSet1 = {
   new Event(180, 73, 40),
   new Event(120, 120, 70),
   new Event(90, 180, 100),
-  new Event(90, 120, 60)
+  new Event(800, 120, 60),
+  new Event(800, 170, 60),
+  new Event(800, 220, 60),
+  new Event(800, 270, 60)
 };
 Event[] eventSet2 = {
   new Event(100, 250, 80),
   new Event(200, 100, 60),
   new Event(300, 150, 100),
   new Event(400, 200, 20),
-  new Event(500, 250, 10)
+  new Event(500, 250, 10),
+  new Event(800, 120, 60),
+  new Event(800, 170, 60),
+  new Event(800, 220, 60),
+  new Event(800, 270, 60)
 };
 
 
@@ -196,13 +203,20 @@ void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
         newEventSet[i] = new Event(800, 80+spacing * (i - eventSet.length), 0);
       }
       eventSet = newEventSet;
+      for (int i = 0; i < toioFires.length; i++) {
+        ToioFire toioFire = toioFires[i];
+        Event event = newEventSet[i];
+        toioFire.event = event;
+      }
+    } else {
+        for (int i = 0; i < min(toioFires.length, eventSet.length); i++) {
+          ToioFire toioFire = toioFires[i];
+          Event event = eventSet[i];
+          toioFire.event = event;
+        }
     }
     
-  for (int i = 0; i < min(toioFire.length, eventSet.length); i++) {
-    ToioFire toioFire = toioFires[i];
-    Event event = eventSet[i];
-    toioFire.event = event;
-  }
+  
 }
 
 // convert fireDataArray to Event array

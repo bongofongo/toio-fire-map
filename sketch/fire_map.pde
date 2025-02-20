@@ -30,6 +30,10 @@ int mapYEnd = mapYStart+mapHeight;
 
 /* Loading Dock Position */
 /* Timeline Position */
+
+int timeLineStart = 50;
+int timeLineEnd = 850;
+
 PImage img;
 FireData[] fireDataArray;
 String[][] stringArray;
@@ -73,8 +77,6 @@ void setup_map() {
   long now = System.currentTimeMillis();
 
   drawLoadingDock(800, 50, "Loading Dock", 5);
-  int timeLineStart = 50;
-  int timeLineEnd = 850;
   drawTimeline(timeLineStart, timeLineEnd, 390, 24, 800 / 24);
 
   /* Drawing related to TOIO goes here, Start -Chi*/
