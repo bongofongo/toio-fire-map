@@ -68,13 +68,14 @@ void setup_map() {
  }
  
  void draw_map() {
-  offscreen.beginDraw();
   offscreen.background(0);
   offscreen.image(img, mapXStart, mapYStart, mapWidth, mapHeight);
   long now = System.currentTimeMillis();
 
   drawLoadingDock(800, 50, "Loading Dock", 5);
-  drawTimeline(50, 850, 390, 24, 800 / 24);
+  int timeLineStart = 50;
+  int timeLineEnd = 850;
+  drawTimeline(timeLineStart, timeLineEnd, 390, 24, 800 / 24);
 
   /* Drawing related to TOIO goes here, Start -Chi*/
   // get target locations for toio
@@ -106,9 +107,6 @@ void setup_map() {
   //popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
   
-  offscreen.endDraw();
-  background(0);
-  surface.render(offscreen);
  }
 
 void drawTimeline(float startX, float endX, float y, int totalHours, float spacing) {

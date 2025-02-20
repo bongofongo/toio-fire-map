@@ -4,6 +4,12 @@ void setup() {
 }
 
 void draw() {
+  offscreen.beginDraw();
+
   draw_toio();
   draw_map();
+
+  offscreen.endDraw();
+  background(0);
+  surface.render(offscreen);
 }

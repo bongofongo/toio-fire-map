@@ -2,7 +2,7 @@
 import oscP5.*;
 import netP5.*;
 //TOIO constants
-int nCubes = 4;
+int nCubes = 8;
 int cubesPerHost = 12;
 int maxMotorSpeed = 115;
 int xOffset = 0;
@@ -29,7 +29,7 @@ NetAddress[] server;
 Cube[] cubes;
 // assign cube to different roles by referencing the cube id
 int[] cubeTimeInput = {0};
-int[] cubeFires = {1, 2, 3};//need to match with the number of cubes
+int[] cubeFires = {1, 2, 3,4,5,6,7};//need to match with the number of cubes
 ToioFire[] toioFires = new ToioFire[cubeFires.length];
 /* Toio Setting End -Chi */
 
@@ -57,6 +57,13 @@ void setup_toio() {
     // assign toio to fire toio
   for (int i = 0; i < cubeFires.length; i++) {
     toioFires[i] = new ToioFire(cubes[cubeFires[i]], eventSet1[i]);
+  }
+
+  // set the toiofire led to red
+  for (int i = 0; i < toioFires.length; i++) {
+    ToioFire toioFire = toioFires[i];
+    Cube cube = toioFire.cube;
+    cube.led(255, 0, 0);
   }
   /* Toio Initializing End -Chi */
 
@@ -100,6 +107,10 @@ void setup_toio() {
 //   }
 //   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
+  int timeInput = readTimeInput();
+  FireData[] toioOut = toioFireData(fireDataArray, 5, 10, timeInput, timeInput+2000);
+  // update the toioFires
+  updateToioFires(toioOut);
   toioUpdate(toioFires);
  }
 
@@ -161,33 +172,33 @@ void toioUpdate(ToioFire[] toioFires) {
 }
 
 // read time input from timeline toio [ATTN] io -Chi
+
 int readTimeInput() {
   // read the x coordinate of the toio
   int x = cubes[cubeTimeInput[0]].x;
-  int timelineXStart = 50;
-  int timelineXEnd = 800;
   int timelineTimeStart = 0;
-  int timelineTimeEnd = 24;
+  int timelineTimeEnd = 2399;
   // convert the x coordinate to the time
-  int time = int(map(x, timelineXStart, timelineXEnd, timelineTimeStart, timelineTimeEnd));
+  int time = int(map(x,timeLineStart , timeLineEnd, timelineTimeStart, timelineTimeEnd));
   return time;
 }
 
 // change the ToioFire with a new fire data eventset
 void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
     // if event set is less than the number of toio, set the rest to a basic event
-    // if (eventSet.length < toioFires.length) {
-    //   Event[] newEventSet = new Event[toioFires.length];
-    //   for (int i = 0; i < eventSet.length; i++) {
-    //     newEventSet[i] = eventSet[i];
-    //   }
-    //   for (int i = eventSet.length; i < toioFires.length; i++) {
-    //     newEventSet[i] = new Event(0, 0, 0);
-    //   }
-    //   eventSet = newEventSet;
-    // }
+    if (eventSet.length < toioFires.length) {
+      Event[] newEventSet = new Event[toioFires.length];
+      for (int i = 0; i < eventSet.length; i++) {
+        newEventSet[i] = eventSet[i];
+      }
+      int spacing = 50;
+      for (int i = eventSet.length; i < toioFires.length; i++) {
+        newEventSet[i] = new Event(800, 80+spacing * (i - eventSet.length), 0);
+      }
+      eventSet = newEventSet;
+    }
     
-  for (int i = 0; i < toioFires.length; i++) {
+  for (int i = 0; i < min(toioFire.length, eventSet.length); i++) {
     ToioFire toioFire = toioFires[i];
     Event event = eventSet[i];
     toioFire.event = event;
