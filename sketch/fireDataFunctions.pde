@@ -34,7 +34,7 @@ FireData[] filterFireDataByTime(FireData[] dataArray, int startTime, int endTime
     int count = 1;
     
     visited[i] = true;
-
+  
     for (int j = 0; j < data.length; j++) {
       if (i == j || visited[j]) continue;
       
