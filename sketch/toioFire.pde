@@ -1,6 +1,8 @@
 /* Toio setting start -Chi */
 import oscP5.*;
 import netP5.*;
+import java.util.Arrays;
+import java.util.Comparator;
 //TOIO constants
 int nCubes = 8;
 int cubesPerHost = 12;
@@ -108,10 +110,20 @@ void setup_toio() {
 //   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
   int timeInput = readTimeInput();
-  FireData[] toioOut = toioFireData(fireDataArray, 5, 10, timeInput, timeInput+2000);
+  if (debug) println("000");
+  println("Time Input: " + timeInput);
+  if (timeInput > 2159) {
+    timeInput = 2159; // cap the time input to 22:00
+    println("Error: Time input is out of range. Capped to 2200.");
+    return;
+  }
+  FireData[] toioOut = toioFireData(fireDataArray, 5, 10, timeInput, timeInput+200);
+  if (debug) println("111");
   // update the toioFires
   updateToioFires(toioOut);
+  if (debug) println("222");
   toioUpdate(toioFires);
+  if (debug) println("333");
  }
 
 
@@ -163,17 +175,21 @@ class ToioFire {
 // the function that checks toio position, if at position, then spin, else move to position
 void toioUpdate(ToioFire[] toioFires) {
   // set the margin of error for the toio to reach the target
-  int margin = 15;
+  int margin = 20;
   for (int i = 0; i < toioFires.length; i++) {
     ToioFire toioFire = toioFires[i];
     Cube cube = toioFire.cube;
     Event event = toioFire.event;
-    if (abs(cube.x - event.x) < margin && abs(cube.y - event.y) < margin) {
+    cube.checkActive(System.currentTimeMillis()); // check if the cube is active
+    if (debug) println("ToioFire " + i + ": Cube ID = " + cube.id + "isActive = " + cube.isActive +
+            ", Target Position = (" + event.x + ", " + event.y + "), Brightness = " + event.brightness);
+    if (cube.isActive && abs(cube.x - event.x) < margin && abs(cube.y - event.y) < margin) {
       circles[i].maxDiameter = event.brightness/2 * 1.5;
       circles[i].x = cube.x - 20;
       circles[i].y = cube.y - 40;
       circles[i].show();
       cube.spin(event.brightness); // TODO: map brightness to speed
+      cube.led(100, 255, 0, 0); // keep the LED red while spinning
     } else {
       circles[i].remove();
       // set the target theta as the angle between the current position and the target position
@@ -198,6 +214,7 @@ int readTimeInput() {
 // change the ToioFire with a new fire data eventset
 void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
     // if event set is less than the number of toio, set the rest to a basic event
+    eventSet = sortEventsByBrightness(eventSet); // sort by brightness in descending order
     if (eventSet.length < toioFires.length) {
       Event[] newEventSet = new Event[toioFires.length];
       for (int i = 0; i < eventSet.length; i++) {
@@ -214,6 +231,9 @@ void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
         toioFire.event = event;
       }
     } else {
+        // sort the toioFires and eventSet by brightness in descending order
+        // This is not strictly necessary, but it can help to prioritize the brightest events first
+
         for (int i = 0; i < min(toioFires.length, eventSet.length); i++) {
           ToioFire toioFire = toioFires[i];
           Event event = eventSet[i];
@@ -224,16 +244,38 @@ void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
   
 }
 
+// updateToioFires from the fireDataArray
+void updateToioFires(FireData[] fireDataArray) {
+    // get eventSet from fireDataArray
+    Event[] eventSet = toioFireData2Arr(fireDataArray, 0, toioFires.length);
+    changeToioFire(toioFires, eventSet); // index ATTN: might have bugs - Chi
+}
+
 // convert fireDataArray to Event array
-Event[] toioFireData(FireData[] fireDataArray, int startIndex, int endIndex) {
+Event[] toioFireData2Arr(FireData[] fireDataArray, int startIndex, int endIndex) {
     //check if startIndex and endIndex is within the range of fireDataArray
+
+  if (debug) println("0000");
   if (startIndex < 0 || endIndex > fireDataArray.length) {
     println("Error: startIndex or endIndex is out of range");
-    return null;
+    println("startIndex: " + startIndex + ", endIndex: " + endIndex + ", fireDataArray.length: " + fireDataArray.length);
+    println("regulating startIndex and endIndex to valid range.");
+
+    startIndex = max(0, startIndex); // ensure startIndex is not negative
+    endIndex = min(fireDataArray.length, endIndex); // ensure endIndex is not greater than length
+
+    if (startIndex >= endIndex) {
+      println("Error: startIndex is greater than or equal to endIndex. Returning empty Event array.");
+      return new Event[0]; // return an empty array if the range is invalid
+    }
   }
+  if (debug) println("0001");
   Event[] eventSet = new Event[endIndex - startIndex];
+  if (debug) println("1111");
   for (int i = startIndex; i < endIndex; i++) {
+    if (debug) println("2222");
     FireData fireData = fireDataArray[i];
+    if (debug) println("3333");
     int[] matLoc = lonLat2MatLoc(fireData.longitude, fireData.latitude);
     Event event = new Event(matLoc[0], matLoc[1], fireData.brightness);
     eventSet[i - startIndex] = event;
@@ -260,8 +302,8 @@ Event[] regulateSpeed(Event[] oldEventSet) {
     return newEventSet;
 }
 
-// updateToioFires
-void updateToioFires(FireData[] fireDataArray) {
-    // change the toioFires with the new eventSet
-    changeToioFire(toioFires, toioFireData(fireDataArray, 0, toioFires.length)); // index ATTN: might have bugs - Chi
+Event[] sortEventsByBrightness(Event[] events) {
+  // Sort the events array by brightness in descending order
+  Arrays.sort(events, (e1, e2) -> Integer.compare(e2.brightness, e1.brightness));
+  return events;
 }

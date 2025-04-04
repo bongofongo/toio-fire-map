@@ -66,15 +66,16 @@ FireData[] filterFireDataByTime(FireData[] dataArray, int startTime, int endTime
    returns: FireData[] splice of data.
    */
 FireData[] toioFireData(FireData[] data, int maxTOIOS, int clusterRadius, int start, int end) {
+
   FireData[] filteredFires = filterFireDataByTime(fireDataArray, start, end);
   FireData[] clusteredFires = clusterFireData(filteredFires, clusterRadius);
   
-  FireData[] res = new FireData[maxTOIOS];
-  for (int i = 0; i < maxTOIOS; i++) {
+  int actualSize = min(maxTOIOS, clusteredFires.length);
+  FireData[] res = new FireData[actualSize];
+  for (int i = 0; i < actualSize; i++) {
     res[i] = clusteredFires[i];
     println(res[i]);
   }
-  
   return res;
 }
 

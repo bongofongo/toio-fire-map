@@ -23,9 +23,9 @@ int mapOriginalWidth = 2848;
 int mapOriginalHeight = 1454;
 int mapWidth = 650;
 int mapHeight = int(mapWidth * float(mapOriginalHeight) / float(mapOriginalWidth));
-int mapXStart = 0;
+int mapXStart = 60;
 int mapXEnd = mapXStart+mapWidth;
-int mapYStart = 0;
+int mapYStart = 60;
 int mapYEnd = mapYStart+mapHeight;
 
 /* Loading Dock Position */

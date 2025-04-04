@@ -58,7 +58,7 @@ class Cube {
   }
 
   void checkActive(long now) {
-    if (lastUpdate < now - 1500 && isActive) {
+    if (lastUpdate < now - 500 && isActive) {
       isActive = false;
     }
   }
