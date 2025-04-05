@@ -6,7 +6,8 @@ CornerPinSurface surface;
 PGraphics offscreen;
 String dataFile = "filtered_file.csv";
 
-/* TOIO Map Coordinates */
+/* TOIO Map Coordinatesc
+https://toio.github.io/toio-spec/en/docs/hardware_position_id/ */
 static int min_x = 45;
 static int max_x = 955;
 static int min_y = 45;
@@ -156,21 +157,22 @@ void drawTimeline(float startX, float endX, float y, int totalHours, float spaci
  }
  
 // convert the latitude and longitude to the x and y coordinates on the map
+// https://toio.github.io/toio-spec/en/docs/hardware_position_id/
 int[] lonLat2MatLoc(float lon, float lat) {
   int[] matLoc = new int[2];
   matLoc[0] = int(map(lon, mapLongtitudeStart, mapLongtitudeEnd, mapXStart, mapXEnd-90));
-  // set the bound to 50 50 - 410 910
-  if (matLoc[0] < 50) {
-    matLoc[0] = 50;
+  // set the bound to 50 50 - 455 955
+  if (matLoc[0] < 45) {
+    matLoc[0] = 45;
   }
-  if (matLoc[0] > 820) {
-    matLoc[0] = 820;
+  if (matLoc[0] > 955-90) {
+    matLoc[0] = 955-90;
   }
-  if (matLoc[1] < 50) {
-    matLoc[1] = 50;
+  if (matLoc[1] < 45) {
+    matLoc[1] = 45;
   }
-  if (matLoc[1] > 410) {
-    matLoc[1] = 410;
+  if (matLoc[1] > 455) {
+    matLoc[1] = 455;
   }
   if (matLoc[0] > 455) {
     matLoc[0] = matLoc[0]+90;
@@ -183,7 +185,10 @@ int[] lonLat2MatLoc(float lon, float lat) {
 // convert the map coordinates to latitude and longitude
 float[] matLoc2LonLat(int x, int y) {
   float[] lonLat = new float[2];
-  lonLat[0] = map(x, mapXStart, mapXEnd, mapLongtitudeStart, mapLongtitudeEnd);
+  if (x>455) {
+    x = x-90; // limit to max x
+  }
+  lonLat[0] = map(x, mapXStart, mapXEnd-90, mapLongtitudeStart, mapLongtitudeEnd);
   lonLat[1] = map(y, mapYStart, mapYEnd, mapLatitudeStart, mapLatitudeEnd);
   return lonLat;
 }

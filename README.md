@@ -5,5 +5,6 @@
 ## Connecting to TOIOs
 - `cd '/Users/charles/Documents/Dev.nosync/MPCS_Chi/AxLab/Laptop-TOIO/rust_osc'`
 - `cargo run -- -a 33,36,85,132,137,143,158,165`
+- `cargo run -- -a 31,53,91,117,138,146,178,191`
 ## Projection Mapping
 - use `c,l,s` to calibrate, load, and save maps.

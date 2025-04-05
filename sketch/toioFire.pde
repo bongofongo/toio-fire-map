@@ -4,7 +4,7 @@ import netP5.*;
 import java.util.Arrays;
 import java.util.Comparator;
 //TOIO constants
-int nCubes = 8;
+int nCubes = 7;
 int cubesPerHost = 12;
 int maxMotorSpeed = 115;
 int xOffset = 0;
@@ -18,7 +18,7 @@ int yOffset = 0;
 //
 boolean WindowsMode = false; //When you enable this, it will check for connection with toio via Rust first, before starting void loop()
 
-int framerate = 30;
+int framerate = 20;
 
 int[] matDimension = {45, 45, 955, 455};
 
@@ -65,49 +65,16 @@ void setup_toio() {
   for (int i = 0; i < toioFires.length; i++) {
     ToioFire toioFire = toioFires[i];
     Cube cube = toioFire.cube;
-    cube.led(500, 255, 0, 0);
+    cube.led(0, 255, 0, 0);
   }
   /* Toio Initializing End -Chi */
 
   
  }
- 
+ /*
+ read time input, get data from
+ */
  void draw_toio() {
-
-  /* Drawing related to TOIO goes here, Start -Chi*/
-  // get target locations for toio
-  // latLon2MatLoc
-  // set the target locations for toio
-  // draw the cubes
-
-//   background(255);
-//   stroke(0);
-//   long now = System.currentTimeMillis();
-
-//   //draw the "mat"
-//   fill(255);
-//   rect(matDimension[0], matDimension[1], matDimension[2] - matDimension[0], matDimension[3] - matDimension[1]);
-
-//   pushMatrix();
-//   translate(xOffset, yOffset);
-
-//   for (int i = 0; i < nCubes; i++) {
-//    cubes[i].checkActive(now);
-
-//    if (cubes[i].isActive) {
-//      pushMatrix();
-//      translate(cubes[i].x, cubes[i].y);
-//      fill(0);
-//      textSize(15);
-//      text(i, 0, -20);
-//      noFill();
-//      rotate(cubes[i].theta * PI/180);
-//      rect(-10, -10, 20, 20);
-//      line(0, 0, 20, 0);
-//      popMatrix();
-//    }
-//   }
-//   popMatrix();
   /* Drawing related to TOIO goes here, End -Chi*/
   int timeInput = readTimeInput();
   if (debug) println("000");
@@ -189,7 +156,6 @@ void toioUpdate(ToioFire[] toioFires) {
       circles[i].y = cube.y - 40;
       circles[i].show();
       cube.spin(event.brightness); // TODO: map brightness to speed
-      cube.led(100, 255, 0, 0); // keep the LED red while spinning
     } else {
       circles[i].remove();
       // set the target theta as the angle between the current position and the target position
@@ -198,6 +164,9 @@ void toioUpdate(ToioFire[] toioFires) {
     }
   }
 }
+
+// check if toio is aat location
+
 
 // read time input from timeline toio [ATTN] io -Chi
 
@@ -247,12 +216,12 @@ void changeToioFire(ToioFire[] toioFires, Event[] eventSet) {
 // updateToioFires from the fireDataArray
 void updateToioFires(FireData[] fireDataArray) {
     // get eventSet from fireDataArray
-    Event[] eventSet = toioFireData2Arr(fireDataArray, 0, toioFires.length);
+    Event[] eventSet = toioFireData2Events(fireDataArray, 0, toioFires.length);
     changeToioFire(toioFires, eventSet); // index ATTN: might have bugs - Chi
 }
 
 // convert fireDataArray to Event array
-Event[] toioFireData2Arr(FireData[] fireDataArray, int startIndex, int endIndex) {
+Event[] toioFireData2Events(FireData[] fireDataArray, int startIndex, int endIndex) {
     //check if startIndex and endIndex is within the range of fireDataArray
 
   if (debug) println("0000");
@@ -295,7 +264,7 @@ Event[] regulateSpeed(Event[] oldEventSet) {
     Event[] newEventSet = new Event[oldEventSet.length];
     for (int i = 0; i < oldEventSet.length; i++) {
         Event oldEvent = oldEventSet[i];
-        int regulatedBrightness = int(map(oldEvent.brightness, 0, maxBrightness, 0, maxMotorSpeed));
+        int regulatedBrightness = int(map(oldEvent.brightness, 0, maxBrightness, 10, maxMotorSpeed)); // 8 is the minimum moving speed
         Event newEvent = new Event(oldEvent.x, oldEvent.y, regulatedBrightness);
         newEventSet[i] = newEvent;
     }

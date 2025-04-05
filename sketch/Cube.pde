@@ -170,7 +170,7 @@ class Cube {
 
   //basic motor control, specification found at:
   //https://toio.github.io/toio-spec/en/docs/ble_motor#motor-control
-  //can use negative numbers to move toio backwards
+  //can use negative numbers to move toio backwards, speed 8-115
   void motor(int leftSpeed, int rightSpeed) {
     motorBasic(id, leftSpeed, rightSpeed);
   }
